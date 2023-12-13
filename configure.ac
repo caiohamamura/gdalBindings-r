@@ -3,7 +3,7 @@ m4_include([inst/m4/m4_ax_lib_gdal.m4])
 
 
 # The version set here will propagate to other files from here
-AC_INIT([gdalBindings], 0.0.1)
+AC_INIT([gdalBindings],[0.0.1])
 
 # Checks for common programs using default macros
 CC=`"${R_HOME}/bin/R" CMD config CC`
@@ -24,5 +24,6 @@ AX_LIB_GDAL2()
 ##################
 
 
-AC_OUTPUT(src/Makevars)
+AC_CONFIG_FILES([src/Makevars])
+AC_OUTPUT
 

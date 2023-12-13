@@ -1,9 +1,9 @@
 # Makefile for GEDI simulator tools
-PKG_CPPFLAGS = @GDAL_CFLAGS@ \
+PKG_CPPFLAGS = -I/home/jovyan/envs/rbase/include \
            -DDLLEXPORT -D__STDC_FORMAT_MACROS \
            -I.
 
-PKG_LIBS=@GDAL_LDFLAGS@
+PKG_LIBS=-L/home/jovyan/envs/rbase/lib -lgdal
 
 
 OBJECTS = rasterizeHDF.o RcppExports.o
