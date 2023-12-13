@@ -160,7 +160,7 @@ An integer indicating band width
 \if{html}{\out{<a id="method-GDALRasterBand-CalculateStatistics"></a>}}
 \if{latex}{\out{\hypertarget{method-GDALRasterBand-CalculateStatistics}{}}}
 \subsection{Method \code{CalculateStatistics()}}{
-Calculate statistics for the \code{\linkS4class{GDALRasterBand}}
+Calculate statistics for the \code{\link{GDALRasterBand}}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{GDALRasterBand$CalculateStatistics()}\if{html}{\out{</div>}}
 }

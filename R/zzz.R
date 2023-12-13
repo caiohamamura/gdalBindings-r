@@ -4,7 +4,6 @@
 }
 
 #' @useDynLib gdalBindings, .registration=TRUE
-#' @export CPP_GDALDataset CPP_GDALRasterBand create_dataset
 .onLoad <- function(libname, pkgname) {
   .gdalBindings_CACHE <- new.env(FALSE, parent = globalenv())
   assign("old.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir = .gdalBindings_CACHE)

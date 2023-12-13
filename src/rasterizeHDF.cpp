@@ -1,6 +1,6 @@
 #include <Rcpp.h>
 #include <gdal_priv.h>
-#include "gdal.hpp"
+#include "gdal.h"
 
 using namespace Rcpp;
 

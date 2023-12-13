@@ -4,15 +4,18 @@ Title: Wraps around GDAL C library using Rcpp for reading and writing to Raster
 Version: 0.1.0
 Authors@R: c(
         person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
-Description: Wraps around GDAL Raster and Band classes for reading and writing
+Description: GDAL Raster and Band Classes Wrapper for Reading and Writing Blocks
     directly from RasterBlock in R semantic `[[]]` and familiar syntax
     for accessing RasterBand and reading/writing to blocks.
 License: GPL-3
 Imports:
     data.table,
-    Rcpp
+    methods,
+    R6,
+    Rcpp,
+    stats
 LinkingTo: Rcpp
-NeedCompilation: yes
+NeedsCompilation: yes
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3

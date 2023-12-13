@@ -252,7 +252,6 @@ GDALDatasetR *RGDALOpen(const char *filename, bool readonly)
 
 RCPP_MODULE(gdal_module)
 {
-
   class_<GDALDatasetR>("CPP_GDALDataset")
       .method("GetRasterBand", &GDALDatasetR::GetRasterBand)
       .method("GetRasterXSize", &GDALDatasetR::GetRasterXSize)

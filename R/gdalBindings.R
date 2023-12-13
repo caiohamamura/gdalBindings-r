@@ -76,7 +76,7 @@ defaultProjection <- 'GEOGCS["WGS 84",
 #'
 #' # Calculate the square - 10
 #' formulaCalculate(
-#'   formula = ~ x * 2 - 10,
+#'   formula = "x * 2 - 10",
 #'   data = list(x = band),
 #'   updateBand = band
 #' )
@@ -115,6 +115,8 @@ createDataset <- function(
 #'
 #' @description
 #' Wrapping class for GDALDataset C++ API exporting GetRasterBand, GetRasterXSize, GetRasterYSize
+#' @import methods
+#' @importFrom R6 R6Class
 #' @export
 GDALDataset <- R6::R6Class("GDALDataset",
   private = list(
@@ -286,7 +288,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 
 
     #' @description
-    #' Calculate statistics for the [`GDALRasterBand-class`]
+    #' Calculate statistics for the [`GDALRasterBand`]
     #' @return nothing
     CalculateStatistics = function() {
       private$band$CalculateStatistics()
@@ -401,6 +403,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #' ds$Close()
 #'
 #' @import data.table
+#' @importFrom stats as.formula model.frame na.pass
 #' @export
 formulaCalculate <- function(formula, data, updateBand) {
   first <- data[[1]]

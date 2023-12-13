@@ -28,7 +28,7 @@ lr_lat <- -25
 lr_lon <- -35
 res <- c(0.01, -0.01)
 datatype <- GDALDataType$GDT_Int32
-nbands <- 1
+nbands <- 2
 projstring <- "EPSG:4326"
 nodata <- -1
 co <- c("TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512", "COMPRESSION=LZW")
@@ -51,14 +51,18 @@ ds <- createDataset(
 # Get the GDALRasterBand for ds
 band <- ds[[1]]
 
+# The updateBand can be the same
+# using a different one just for testing
+updateBand <- ds[[2]]
+
 # Set some dummy values
 band[[0, 0]] <- 1:(512 * 512)
 
 # Calculate the square - 10
 formulaCalculate(
-  formula = x * 2 - 10,
+  formula = "x * 2 - 10",
   data = list(x = band),
-  updateBand = band
+  updateBand = updateBand
 )
 
 ds$Close()
