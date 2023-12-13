@@ -1,12 +1,20 @@
 Package: gdalBindings
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Type: Package
+Title: Wraps around GDAL C library using Rcpp for reading and writing to Raster
+Version: 0.1.0
+Authors@R: c(
+        person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
+Description: Wraps around GDAL Raster and Band classes for reading and writing
+    directly from RasterBlock in R semantic `[[]]` and familiar syntax
+    for accessing RasterBand and reading/writing to blocks.
+License: GPL-3
+Imports:
+    Rcpp,
+    Rdpack
+LinkingTo: Rcpp
+NeedCompilation: yes
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+LazyData: true
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+RdMacros: Rdpack
