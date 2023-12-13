@@ -14,7 +14,7 @@ PKG_LIBS += \
 	-L. \
 	${PKG_CONFIG_LIBS}
 
-OBJECTS = rasterizeHDF.o
+OBJECTS = rasterizeHDF.o RcppExports.o
 
 
 $(SHLIB): $(OBJECTS)

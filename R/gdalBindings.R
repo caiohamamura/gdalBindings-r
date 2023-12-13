@@ -361,7 +361,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #' lr_lon <- -35
 #' res <- c(0.01, -0.01)
 #' datatype <- GDALDataType$GDT_Int32
-#' nbands <- 1
+#' nbands <- 2
 #' projstring <- "EPSG:4326"
 #' nodata <- -1
 #' co <- c("TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512", "COMPRESSION=LZW")
@@ -383,19 +383,24 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #'
 #' # Get the GDALRasterBand for ds
 #' band <- ds[[1]]
+#' 
+#' # The updateBand can be the same
+#' # using a different one just for testing
+#' updateBand <- ds[[2]]
 #'
 #' # Set some dummy values
 #' band[[0, 0]] <- 1:(512 * 512)
 #'
 #' # Calculate the square - 10
 #' formulaCalculate(
-#'   formula = ~ x * 2 - 10,
+#'   formula = "x * 2 - 10",
 #'   data = list(x = band),
-#'   updateBand = band
+#'   updateBand = updateBand
 #' )
 #'
 #' ds$Close()
 #'
+#' @import data.table
 #' @export
 formulaCalculate <- function(formula, data, updateBand) {
   first <- data[[1]]
@@ -421,7 +426,7 @@ formulaCalculate <- function(formula, data, updateBand) {
         ),
         appendLF = FALSE
       )
-      vals <- as.data.table(lapply(thisData, function(x) x[[xblock, yblock]]))
+      vals <- data.table::as.data.table(lapply(thisData, function(x) x[[xblock, yblock]]))
       mask <- !is.na(vals[[1]])
       if (!any(mask)) next
       vals[[1]][mask] <- model.frame(form, vals[mask], na.action = na.pass)[[1]]
