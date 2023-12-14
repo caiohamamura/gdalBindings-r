@@ -18,8 +18,8 @@ An R6 object of GDALDataset class.
 Function to open GDAL Dataset
 }
 \examples{
-system.file("extdata", "example.tif", package="gdalBindings")
+ds_path <- system.file("extdata", "example.tif", package="gdalBindings")
 
-GDALOpen("")
-
+ds <- GDALOpen(ds_path)
+ds$close()
 }
