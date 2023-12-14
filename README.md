@@ -36,5 +36,5 @@ remotes::install_github('caiohamamura/rgdalBindings')
 Please report any issue regarding the gdalBindings package to Dr. Hamamura (hamamura.caio@ifsp.edu.br)
 
 # Citing rgdalBindings
-Hamamura, C. rgdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster, version 0.1.0, accessed on December. 13 2023, available at: <https://CRAN.R-project.org/package=gdalBindings>
+Hamamura, C. rgdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster, version 0.1.1, accessed on December. 13 2023, available at: <https://CRAN.R-project.org/package=gdalBindings>
 
