@@ -174,7 +174,7 @@ close.GDALDataset <- function(con, ...) {
 #' @examples 
 #' ds_path <- system.file("extdata", "example.tif", package="gdalBindings")
 #' 
-#' ds <- GDALOpen("ds_path")
+#' ds <- GDALOpen(ds_path)
 #' ds$close()
 #' @export
 GDALOpen <- function(filename, readonly = TRUE) {
