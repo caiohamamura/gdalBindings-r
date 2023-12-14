@@ -1,10 +1,10 @@
-![Github](https://img.shields.io/badge/Github-0.1.4-green.svg)
+![Github](https://img.shields.io/badge/Github-0.1.5-green.svg)
 ![License](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rgdalBindings)
 
 **rgdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster**
 
-Author: Caio Hamamura  
+Authors: Caio Hamamura, Carlos Alberto Silva
 
 The rgdalBindings package wraps around GDAL Raster and Band classes for reading
 and writing directly from RasterBlock in R semantic `[[]]` and familiar syntax
@@ -182,5 +182,5 @@ ds$Close()
 Please report any issue regarding the gdalBindings package to Dr. Hamamura (hamamura.caio@ifsp.edu.br)
 
 # Citing rgdalBindings
-Hamamura, C. rgdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster, version 0.1.4, accessed on December. 14 2023, available at: <https://github.com/caiohamamura/rgdalBindings>
+Hamamura, C. rgdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster, version 0.1.5, accessed on December. 14 2023, available at: <https://github.com/caiohamamura/rgdalBindings>
 
