@@ -3,6 +3,7 @@
 S3method("[[",GDALDataset)
 S3method("[[",GDALRasterBand)
 S3method("[[<-",GDALRasterBand)
+S3method(close,GDALDataset)
 export(GDALDataType)
 export(GDALDataset)
 export(GDALOpen)

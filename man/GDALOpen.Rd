@@ -17,3 +17,9 @@ An R6 object of GDALDataset class.
 \description{
 Function to open GDAL Dataset
 }
+\examples{
+system.file("extdata", "example.tif", package="gdalBindings")
+
+GDALOpen("")
+
+}

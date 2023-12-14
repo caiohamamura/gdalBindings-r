@@ -74,13 +74,6 @@ defaultProjection <- 'GEOGCS["WGS 84",
 #' # Set some dummy values
 #' band[[0, 0]] <- 1:(512 * 512)
 #'
-#' # Calculate the square - 10
-#' formulaCalculate(
-#'   formula = "x * 2 - 10",
-#'   data = list(x = band),
-#'   updateBand = band
-#' )
-#'
 #' ds$Close()
 #' @export
 createDataset <- function(
@@ -129,6 +122,7 @@ GDALDataset <- R6::R6Class("GDALDataset",
     #' @param ds GDALDatasetR pointer. Should not be used
     #' @param datatype GDALDataType. The GDALDataType to use for the raster, use (GDALDataType$)
     #' to find the options. Default GDALDataType$GDT_Float64
+    #' 
     #' @return An object from GDALDataset R6 class.
     initialize = function(ds) {
       private$ds <- ds
@@ -148,7 +142,6 @@ GDALDataset <- R6::R6Class("GDALDataset",
     #' Get the height for the raster
     #' @return An integer indicating the raster height
     GetRasterYSize = function() private$ds$GetRasterYSize(),
-
     #' @description
     #' Closes the GDALDataset
     #' @return An integer indicating the raster width
@@ -156,6 +149,19 @@ GDALDataset <- R6::R6Class("GDALDataset",
   )
 )
 
+#' Method to close GDALDataset
+#' 
+#' @param con GDALDataset to be closed.
+#' @param ... not used, inherited from generic close function.
+#' 
+#' @description 
+#' Closing ensures the data is actually flushed (saved) to  the dataset
+#' also it releases the lock from the file.
+#' 
+#' @export
+close.GDALDataset <- function(con, ...) {
+  con$Close()
+}
 
 #' Open GDAL raster
 #' @description
@@ -164,6 +170,12 @@ GDALDataset <- R6::R6Class("GDALDataset",
 #' @param filename Character. The path to a GDAL dataset.
 #' @param readonly Logical. Flag to open a read only GDALDataset with GA_ReadOnly or GA_Update. Default TRUE.
 #' @return An R6 object of GDALDataset class.
+#' 
+#' @examples 
+#' ds_path <- system.file("extdata", "example.tif", package="gdalBindings")
+#' 
+#' ds <- GDALOpen("ds_path")
+#' ds$close()
 #' @export
 GDALOpen <- function(filename, readonly = TRUE) {
   ds <- RGDALOpen(filename, readonly)
@@ -395,7 +407,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #'
 #' # Calculate the square - 10
 #' formulaCalculate(
-#'   formula = "x * 2 - 10",
+#'   formula = "x ** 2 - 10",
 #'   data = list(x = band),
 #'   updateBand = updateBand
 #' )
