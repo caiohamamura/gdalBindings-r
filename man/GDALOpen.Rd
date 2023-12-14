@@ -21,5 +21,5 @@ Function to open GDAL Dataset
 ds_path <- system.file("extdata", "example.tif", package="gdalBindings")
 
 ds <- GDALOpen(ds_path)
-ds$close()
+ds$Close()
 }
