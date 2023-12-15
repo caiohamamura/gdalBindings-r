@@ -4,6 +4,12 @@
 
 * This is a new release.
 
+## Fixes provided in this new submission
+
+1. As requested by Beni Altmann we explained the GDAL acronym in the DESCRIPTION metadata file.
+We at first thought it wouldn't be necessary as the library is well known by its acronym. 
+2. We also added a link pointing to the official website for the GDAL library.
+
 ## Details on notes
 
 The notes were:
