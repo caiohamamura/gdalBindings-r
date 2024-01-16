@@ -1,7 +1,7 @@
 Package: gdalBindings
 Type: Package
 Title: GDAL Classes Wrapper for Reading and Writing Raster Blocks
-Version: 0.1.9
+Version: 0.1.11
 Authors@R: c(
         person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")),
         person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut"))
@@ -9,7 +9,7 @@ Authors@R: c(
 Description: Wraps around 'Geospatial' Data Abstraction Library (GDAL) raster
     and band classes for reading and writing directly from RasterBlock in R
     semantic `[[]]` and familiar syntax for accessing RasterBand and
-    reading/writing to blocks. (see <https://gdal.org/>)
+    reading/writing to blocks (see <https://gdal.org/>).
 License: GPL-3
 Imports:
     data.table,
