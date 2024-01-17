@@ -405,9 +405,9 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #' # Set some dummy values
 #' band[[0, 0]] <- 1:(512 * 512)
 #'
-#' # Calculate the square - 10
+#' # Calculate the double - 10
 #' formulaCalculate(
-#'   formula = "x ** 2 - 10",
+#'   formula = "~x * 2 - 10",
 #'   data = list(x = band),
 #'   updateBand = updateBand
 #' )
@@ -422,7 +422,11 @@ formulaCalculate <- function(formula, data, updateBand) {
   blocksize1 <- c(first$GetBlockXSize(), first$GetBlockYSize())
   bandsize1 <- c(first$GetXSize(), first$GetYSize())
   iters <- floor(bandsize1 / blocksize1)
-  form <- as.formula(paste0("~I(", as.character(formula)[1], ")"))
+  if (!is.call(formula)) {
+    form <- as.formula(paste0("~I(", as.character(formula)[1], ")"))
+  } else {
+    form <- as.formula(paste0("~I(", as.character(formula)[2], ")"))
+  }
   totalBlocks <- (iters[1] + 1) * (iters[2] + 1)
   blockCounter <- 0
   termNames <- names(data)
