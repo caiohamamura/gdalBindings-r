@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.17 (2024-01-17)
+
+- Same as previous version.
+
+
 # gdalBindings 0.1.16 (2024-01-16)
 
 - Same as previous version.
