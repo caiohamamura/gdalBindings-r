@@ -407,7 +407,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #'
 #' # Calculate the double - 10
 #' formulaCalculate(
-#'   formula = "~x * 2 - 10",
+#'   formula = ~x * 2 - 10,
 #'   data = list(x = band),
 #'   updateBand = updateBand
 #' )
