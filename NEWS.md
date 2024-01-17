@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.15 (2024-01-16)
+
+- Same as previous version.
+
+
 # gdalBindings 0.1.14 (2024-01-16)
 
 * Add GDAL as a SystemRequirement
