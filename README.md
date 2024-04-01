@@ -33,11 +33,11 @@ efficient way and block by block.
 ## Installation
 ```r
 #The CRAN version:
-install.packages("rgdalBindings")
+install.packages("gdalBindings")
 
 # The development version:
 #install.packages("remotes")
-remotes::install_github('caiohamamura/rgdalBindings')
+remotes::install_github('caiohamamura/gdalBindings-r')
 ```
 
 
