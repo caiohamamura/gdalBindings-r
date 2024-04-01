@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.18 (2024-04-01)
+
+* Use pkg-config for Makevars.ucrt
+
+
 # gdalBindings 0.1.17 (2024-01-17)
 
 - Same as previous version.
