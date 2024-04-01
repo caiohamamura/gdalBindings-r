@@ -1,4 +1,4 @@
-![Github](https://img.shields.io/badge/Github-0.1.17-green.svg)
+![Github](https://img.shields.io/badge/Github-0.1.18-green.svg)
 ![License](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/gdalBindings)
 
