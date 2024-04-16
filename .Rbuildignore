@@ -6,3 +6,4 @@
 ^temp$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^.github$
