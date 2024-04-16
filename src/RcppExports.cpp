@@ -10,10 +10,22 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// CPL_set_data_dir
+Rcpp::LogicalVector CPL_set_data_dir(Rcpp::CharacterVector data_dir);
+RcppExport SEXP _gdalBindings_CPL_set_data_dir(SEXP data_dirSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type data_dir(data_dirSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_set_data_dir(data_dir));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_gdal_module();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_gdalBindings_CPL_set_data_dir", (DL_FUNC) &_gdalBindings_CPL_set_data_dir, 1},
     {"_rcpp_module_boot_gdal_module", (DL_FUNC) &_rcpp_module_boot_gdal_module, 0},
     {NULL, NULL, 0}
 };
