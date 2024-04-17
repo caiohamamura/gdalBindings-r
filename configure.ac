@@ -29,6 +29,5 @@ AC_SUBST([GDAL_DEP_LIBS])
 ## END
 ##################
 
-
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

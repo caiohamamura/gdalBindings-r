@@ -1,6 +1,7 @@
 ## Fixes provided in this new submission
 
-1. As requested by Uwe Ligges, we've updated the linking to libsharpyuv
-to work with both Rtools43 and oldrelease Rtools42
-2. Another issue was that GDAL wasn't specified within SystemRequiments in DESCRIPTION
-3. The repository name within github was updated within DESCRIPTION file
+1. As requested we updated the way proj.db is being linked: 
+   - unix: default environment variable PROJ_LIB
+   - windows: cp -r /x86_64-w64-mingw32.static.posix/share/proj ./inst/proj
+
+2. Update ucrt and configure scripts to rely on pkg-config
