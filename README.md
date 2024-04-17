@@ -1,5 +1,5 @@
 [![CRAN](https://www.r-pkg.org/badges/version/gdalBindings)](https://CRAN.R-project.org/package=gdalBindings)
-![Github](https://img.shields.io/badge/Github-0.1.20-green.svg)
+![Github](https://img.shields.io/badge/Github-0.1.22-green.svg)
 ![License](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/gdalBindings)
 
