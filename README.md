@@ -163,7 +163,7 @@ updateBand = ds[[2]]
 
 # Calculate double - 10, we will call the band "x" by naming the list index
 formulaCalculate(
-  formula = "x * 2 - 10",
+  formula = ~x * 2 - 10,
   data = list(x = band),
   updateBand = updateBand
 )
