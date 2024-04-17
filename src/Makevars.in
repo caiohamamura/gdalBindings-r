@@ -3,7 +3,7 @@ PKG_CPPFLAGS = @GDAL_CFLAGS@ \
            -DDLLEXPORT -D__STDC_FORMAT_MACROS \
            -I.
 
-PKG_LIBS=@GDAL_LIBS@
+PKG_LIBS=@GDAL_LIBS@ @GDAL_DEP_LIBS@
 
 
 OBJECTS = rasterizeHDF.o RcppExports.o

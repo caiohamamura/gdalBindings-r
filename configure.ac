@@ -18,6 +18,13 @@ AC_PROG_CC
 PKG_CHECK_MODULES(GDAL, gdal)
 
 
+AC_CHECK_PROG(GDAL_CONFIG_CHECK,gdal-config,yes)
+AS_IF([test x"$GDAL_CONFIG_CHECK" = x"yes"], [
+  GDAL_DEP_LIBS=`gdal-config --dep-libs`
+])
+
+AC_SUBST([GDAL_DEP_LIBS])
+
 ##################
 ## END
 ##################

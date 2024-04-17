@@ -1,7 +1,7 @@
 Package: gdalBindings
 Type: Package
 Title: GDAL Classes Wrapper for Reading and Writing Raster Blocks
-Version: 0.1.21
+Version: 0.1.22
 Authors@R: c(
         person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")),
         person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut"))
