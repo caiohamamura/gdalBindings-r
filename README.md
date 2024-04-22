@@ -1,6 +1,6 @@
 ![R-hub auto check](https://github.com/caiohamamura/gdalBindings-R/actions/workflows/rhub.yaml/badge.svg)
 [![CRAN](https://www.r-pkg.org/badges/version/gdalBindings)](https://CRAN.R-project.org/package=gdalBindings)
-![Github](https://img.shields.io/badge/Github-0.1.24-green.svg)
+[![gdalBindings status badge](https://caiohamamura.r-universe.dev/badges/gdalBindings)](https://caiohamamura.r-universe.dev/gdalBindings)
 ![License](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/gdalBindings)
 
