@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/gdalBindings)
 
-**rgdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster**
+**gdalBindings: wraps around GDAL C library using Rcpp for reading and writing to Raster**
 
 Authors: Caio Hamamura, Carlos Alberto Silva
 
