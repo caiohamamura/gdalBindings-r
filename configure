@@ -3240,6 +3240,11 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+# Get the system type
+host_os=`"$R_HOME/bin/Rscript" -e "suppressWarnings(Sys.info()['sysname'])"`
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: Detected OS: $host_os" >&5
+printf "%s\n" "$as_me: Detected OS: $host_os" >&6;}
+
 #################
 ## GDAL
 #################
@@ -3336,8 +3341,17 @@ printf "%s\n" "yes" >&6; }
 
 fi
 
-# Check if gdal-config is available
-# Extract the first word of "gdal-config", so it can be a program name with args.
+#--------------------------------
+#- macOS Specific GDAL deps (won't compile otherwise)
+#--------------------------------
+# Execute only if the host OS is macOS
+case "$host_os" in
+  *Darwin*)
+    # Commands or configurations specific to macOS
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Configuring for macOS" >&5
+printf "%s\n" "$as_me: Configuring for macOS" >&6;}
+    # Check if gdal-config is available
+    # Extract the first word of "gdal-config", so it can be a program name with args.
 set dummy gdal-config; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 printf %s "checking for $ac_word... " >&6; }
@@ -3379,16 +3393,15 @@ printf "%s\n" "no" >&6; }
 fi
 
 
-
-# If gdal-config is available, get the GDAL dependency libraries
-if test x"$GDAL_CONFIG_CHECK" = x"yes"
+    if test x"$GDAL_CONFIG_CHECK" = x"yes"
 then :
 
-  GDAL_DEP_LIBS=`gdal-config --libs`
+      GDAL_DEP_LIBS=`gdal-config --dep-libs`
 
 fi
+    ;;
+esac
 
-# Substitute the GDAL dependency libraries
 
 
 ################
