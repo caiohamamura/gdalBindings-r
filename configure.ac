@@ -1,15 +1,20 @@
 # Initialize the package and version
-AC_INIT([gdalBindings], [0.1.20])
+AC_INIT([gdalBindings],[0.1.25])
+
+# Initialize autoconfig
+AC_PREREQ([2.71])
 
 # Check for the required version of pkg-config
 PKG_PROG_PKG_CONFIG([0.15.0])
 
-# Check for the presence of a C compiler
-AC_PROG_CC  
+# Pick R specific compiler and flags
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 
-# Get the system type
-host_os=`"$R_HOME/bin/Rscript" -e "suppressWarnings(Sys.info()[['sysname']])"`
-AC_MSG_NOTICE([Detected OS: $host_os])
+# Check for the presence of a C compiler
+AC_PROG_CXX()
+
 
 #################
 ## GDAL
@@ -17,21 +22,81 @@ AC_MSG_NOTICE([Detected OS: $host_os])
 # Check for GDAL using pkg-config
 PKG_CHECK_MODULES([GDAL], [gdal])
 
-#--------------------------------
-#- macOS Specific GDAL deps (won't compile otherwise)
-#--------------------------------
-# Execute only if the host OS is macOS
-case "$host_os" in
-  *Darwin*)
-    # Commands or configurations specific to macOS
-    AC_MSG_NOTICE([Configuring for macOS])
-    # Check if gdal-config is available
+# Define CXXFLAGS which are used by default to compile the test program
+CXXFLAGS="${CXXFLAGS} ${GDAL_CFLAGS}"
+
+# Define CPPFLAGS which are used by default by AC_CHECK_HEADER
+CPPFLAGS="${CPPFLAGS} ${GDAL_CFLAGS}" 
+
+# Check if header files are present
+AC_CHECK_HEADER([gdal.h],
+  [],
+  [
+    AC_MSG_ERROR([gdal.h not found in given locations.])
+  ]
+)
+
+# Define a macro to test if gdal test program compiles
+AC_DEFUN([GDAL_TEST_PROGRAM_IFELSE], [
+  AC_MSG_CHECKING([$1])
+  AC_LANG_PUSH([C++])
+  AC_LINK_IFELSE([
+    AC_LANG_PROGRAM(
+        [[#include <gdal.h>]],
+        [[GDALAllRegister();]]
+    )
+  ]
+  ,[
+      AC_MSG_RESULT([yes])
+      $2
+    ], # Action if the program compiles correctly
+    [
+      AC_MSG_RESULT([no])
+      $3
+  ]   # Action if the program fails to compile
+  )
+  AC_LANG_POP([C++])
+])
+
+LIBS="${LIBS} ${GDAL_LIBS}"
+
+GDAL_TEST_PROGRAM_IFELSE(
+  [whether GDAL can be linked using only pkg-config],
+  [
+    gdal_can_compile=yes
+    GDAL_DEP_LIBS=""
+  ],
+  [
+    gdal_can_compile=no
+  ]
+)
+
+AS_IF([test "x$gdal_can_compile" = "xno"],
+  [
     AC_CHECK_PROG([GDAL_CONFIG_CHECK], [gdal-config], [yes])
-    AS_IF([test x"$GDAL_CONFIG_CHECK" = x"yes"], [
-      GDAL_DEP_LIBS=`gdal-config --dep-libs`
-    ])
-    ;;
-esac
+    AS_IF(
+      [test x"$GDAL_CONFIG_CHECK" = x"yes"], 
+      [
+        GDAL_DEP_LIBS=`gdal-config --dep-libs`
+        LIBS="${LIBS} ${GDAL_DEP_LIBS}"
+        
+        GDAL_TEST_PROGRAM_IFELSE(
+          [whether GDAL can be linked using gdal-config libs],
+          [],
+          [
+            AC_MSG_ERROR([Could not link to GDAL neither with pkg-config only nor gdal-config.])
+          ]
+        )
+
+      ],
+      [
+        AC_MSG_ERROR([gdal-config not found, is gdal installed?])
+      ]
+    )
+  ]
+)
+
+
 
 AC_SUBST([GDAL_DEP_LIBS])
 
