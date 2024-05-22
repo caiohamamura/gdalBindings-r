@@ -1,15 +1,2 @@
-# Makefile for GEDI simulator tools
-PKG_CPPFLAGS = @GDAL_CFLAGS@ \
-           -DDLLEXPORT -D__STDC_FORMAT_MACROS \
-           -I.
-
-PKG_LIBS=@GDAL_LIBS@ @GDAL_DEP_LIBS@
-
-
-OBJECTS = rasterizeHDF.o RcppExports.o
-
-all: $(SHLIB)
-$(SHLIB): $(OBJECTS)
-
-.PHONY: all
-
+PKG_CPPFLAGS = @GDAL_CFLAGS@
+PKG_LIBS = @GDAL_LIBS@ @PROJ_LIBS@ @CURL_LIBS@

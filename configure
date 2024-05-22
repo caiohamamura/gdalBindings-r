@@ -614,8 +614,10 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-GDAL_DEP_LIBS
-GDAL_CONFIG_CHECK
+CURL_LIBS
+CURL_CFLAGS
+PROJ_LIBS
+PROJ_CFLAGS
 GDAL_LIBS
 GDAL_CFLAGS
 OBJEXT
@@ -683,7 +685,11 @@ LDFLAGS
 LIBS
 CPPFLAGS
 GDAL_CFLAGS
-GDAL_LIBS'
+GDAL_LIBS
+PROJ_CFLAGS
+PROJ_LIBS
+CURL_CFLAGS
+CURL_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1313,6 +1319,10 @@ Some influential environment variables:
               you have headers in a nonstandard directory <include dir>
   GDAL_CFLAGS C compiler flags for GDAL, overriding pkg-config
   GDAL_LIBS   linker flags for GDAL, overriding pkg-config
+  PROJ_CFLAGS C compiler flags for PROJ, overriding pkg-config
+  PROJ_LIBS   linker flags for PROJ, overriding pkg-config
+  CURL_CFLAGS C compiler flags for CURL, overriding pkg-config
+  CURL_LIBS   linker flags for CURL, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -1743,9 +1753,7 @@ struct stat;
 /* Most of the following tests are stolen from RCS 5.7 src/conf.sh.  */
 struct buf { int x; };
 struct buf * (*rcsopen) (struct buf *, struct stat *, int);
-static char *e (p, i)
-     char **p;
-     int i;
+static char *e (char **p, int i)
 {
   return p[i];
 }
@@ -1796,6 +1804,7 @@ extern int puts (const char *);
 extern int printf (const char *, ...);
 extern int dprintf (int, const char *, ...);
 extern void *malloc (size_t);
+extern void free (void *);
 
 // Check varargs macros.  These examples are taken from C99 6.10.3.5.
 // dprintf is used instead of fprintf to avoid needing to declare
@@ -2106,7 +2115,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# Check pkg-config
+# Check for the required version of pkg-config
 
 
 
@@ -2238,11 +2247,7 @@ printf "%s\n" "no" >&6; }
 	fi
 fi
 
-# Checks for common programs using default macros
-#CC=`"${R_HOME}/bin/R" CMD config CC`
-#CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-#CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-#LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
+# Check for the presence of a C compiler
 
 
 
@@ -3239,10 +3244,10 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-
 #################
 ## GDAL
 #################
+# Check for GDAL using pkg-config
 
 pkg_failed=no
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gdal" >&5
@@ -3295,14 +3300,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GDAL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gdal" 2>&1`
+                GDAL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gdal" 2>&1`
         else
-	        GDAL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gdal" 2>&1`
+                GDAL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gdal" 2>&1`
         fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GDAL_PKG_ERRORS" >&5
+        # Put the nasty error message in config.log where it belongs
+        echo "$GDAL_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (gdal) were not met:
+        as_fn_error $? "Package requirements (gdal) were not met:
 
 $GDAL_PKG_ERRORS
 
@@ -3315,7 +3320,7 @@ See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-	{ { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -3328,69 +3333,219 @@ See the pkg-config man page for more details.
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details" "$LINENO" 5; }
 else
-	GDAL_CFLAGS=$pkg_cv_GDAL_CFLAGS
-	GDAL_LIBS=$pkg_cv_GDAL_LIBS
+        GDAL_CFLAGS=$pkg_cv_GDAL_CFLAGS
+        GDAL_LIBS=$pkg_cv_GDAL_LIBS
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 
 fi
 
+# # Check if gdal-config is available
+# AC_CHECK_PROG([GDAL_CONFIG_CHECK], [gdal-config], [yes])
+#
+# # If gdal-config is available, get the GDAL dependency libraries
+# AS_IF([test x"$GDAL_CONFIG_CHECK" = x"yes"], [
+#   GDAL_DEP_LIBS=`gdal-config --libs`
+# ])
+#
+# # Substitute the GDAL dependency libraries
+# AC_SUBST([GDAL_DEP_LIBS])
 
-# Extract the first word of "gdal-config", so it can be a program name with args.
-set dummy gdal-config; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_prog_GDAL_CONFIG_CHECK+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -n "$GDAL_CONFIG_CHECK"; then
-  ac_cv_prog_GDAL_CONFIG_CHECK="$GDAL_CONFIG_CHECK" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_GDAL_CONFIG_CHECK="yes"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
+################
+## PROJ
+################
 
-fi
-fi
-GDAL_CONFIG_CHECK=$ac_cv_prog_GDAL_CONFIG_CHECK
-if test -n "$GDAL_CONFIG_CHECK"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $GDAL_CONFIG_CHECK" >&5
-printf "%s\n" "$GDAL_CONFIG_CHECK" >&6; }
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for proj" >&5
+printf %s "checking for proj... " >&6; }
+
+if test -n "$PROJ_CFLAGS"; then
+    pkg_cv_PROJ_CFLAGS="$PROJ_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"proj\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "proj") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PROJ_CFLAGS=`$PKG_CONFIG --cflags "proj" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$PROJ_LIBS"; then
+    pkg_cv_PROJ_LIBS="$PROJ_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"proj\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "proj") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PROJ_LIBS=`$PKG_CONFIG --libs "proj" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+                PROJ_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "proj" 2>&1`
+        else
+                PROJ_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "proj" 2>&1`
+        fi
+        # Put the nasty error message in config.log where it belongs
+        echo "$PROJ_PKG_ERRORS" >&5
+
+        as_fn_error $? "Package requirements (proj) were not met:
+
+$PROJ_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables PROJ_CFLAGS
+and PROJ_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables PROJ_CFLAGS
+and PROJ_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+        PROJ_CFLAGS=$pkg_cv_PROJ_CFLAGS
+        PROJ_LIBS=$pkg_cv_PROJ_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+
+fi
+
+################
+## CURL
+################
+
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libcurl" >&5
+printf %s "checking for libcurl... " >&6; }
+
+if test -n "$CURL_CFLAGS"; then
+    pkg_cv_CURL_CFLAGS="$CURL_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libcurl\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libcurl") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_CURL_CFLAGS=`$PKG_CONFIG --cflags "libcurl" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$CURL_LIBS"; then
+    pkg_cv_CURL_LIBS="$CURL_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libcurl\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libcurl") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_CURL_LIBS=`$PKG_CONFIG --libs "libcurl" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
 fi
 
 
-if test x"$GDAL_CONFIG_CHECK" = x"yes"
-then :
 
-  GDAL_DEP_LIBS=`gdal-config --dep-libs`
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+                CURL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libcurl" 2>&1`
+        else
+                CURL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libcurl" 2>&1`
+        fi
+        # Put the nasty error message in config.log where it belongs
+        echo "$CURL_PKG_ERRORS" >&5
+
+        as_fn_error $? "Package requirements (libcurl) were not met:
+
+$CURL_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables CURL_CFLAGS
+and CURL_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+        { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables CURL_CFLAGS
+and CURL_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+        CURL_CFLAGS=$pkg_cv_CURL_CFLAGS
+        CURL_LIBS=$pkg_cv_CURL_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
 
 fi
-
-
 
 ##################
 ## END
 ##################
 
+# Configure the output files
 ac_config_files="$ac_config_files src/Makevars"
 
 cat >confcache <<\_ACEOF
@@ -4542,5 +4697,4 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 printf "%s\n" "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
-
 
