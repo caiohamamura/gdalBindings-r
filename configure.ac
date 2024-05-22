@@ -13,16 +13,16 @@ AC_PROG_CC
 # Check for GDAL using pkg-config
 PKG_CHECK_MODULES([GDAL], [gdal])
 
-# # Check if gdal-config is available
-# AC_CHECK_PROG([GDAL_CONFIG_CHECK], [gdal-config], [yes])
-# 
-# # If gdal-config is available, get the GDAL dependency libraries
-# AS_IF([test x"$GDAL_CONFIG_CHECK" = x"yes"], [
-#   GDAL_DEP_LIBS=`gdal-config --libs`
-# ])
-# 
-# # Substitute the GDAL dependency libraries
-# AC_SUBST([GDAL_DEP_LIBS])
+# Check if gdal-config is available
+AC_CHECK_PROG([GDAL_CONFIG_CHECK], [gdal-config], [yes])
+
+# If gdal-config is available, get the GDAL dependency libraries
+AS_IF([test x"$GDAL_CONFIG_CHECK" = x"yes"], [
+  GDAL_DEP_LIBS=`gdal-config --libs`
+])
+
+# Substitute the GDAL dependency libraries
+AC_SUBST([GDAL_DEP_LIBS])
 
 ################
 ## PROJ
