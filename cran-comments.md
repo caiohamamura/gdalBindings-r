@@ -1,4 +1,5 @@
 ## Fixes provided in this new submission
 
-1. Updated the configure script based on the configure.ac file.
-2. Added .gitattributes to checkout configure.ac with LF to avoid windows check issues.
+1. Use `gdal-config --dep-libs` only for MacOS as the `pkg-config` and 
+   `gdal-config --libs` won't capture all the dependencies in MacOS platform.
+2. Update windows and unix to use a simplified Makefile template file

@@ -1,6 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
-# gdalBindings 0.1.24 (2024-04-22)
+# gdalBindings 0.1.25 (2024-05-22)
+
+* Simplified configuring and build systems
+
+
+# gdalBindings 0.1.25 (2024-04-22)
 
 * In windows use pkg-config by default and copy proj.db
 
