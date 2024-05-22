@@ -29,11 +29,6 @@ PKG_CHECK_MODULES([GDAL], [gdal])
 ################
 PKG_CHECK_MODULES([PROJ], [proj])
 
-################
-## CURL
-################
-PKG_CHECK_MODULES([CURL], [libcurl])
-
 ##################
 ## END
 ##################

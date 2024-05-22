@@ -31,11 +31,6 @@ AC_SUBST([GDAL_DEP_LIBS])
 ################
 PKG_CHECK_MODULES([PROJ], [proj])
 
-################
-## CURL
-################
-PKG_CHECK_MODULES([CURL], [libcurl])
-
 # Copy gdal and proj data directories
 cp -r /x86_64-w64-mingw32.static.posix/share/gdal ./inst/gdal
 cp -r /x86_64-w64-mingw32.static.posix/share/proj ./inst/proj

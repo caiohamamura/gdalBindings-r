@@ -5,3 +5,13 @@
 *.dll
 *.o
 temp
+inst/gdal
+inst/proj
+autom4te.cache
+aclocal.m4
+config.status
+config.log
+configure.win~
+configure~
+src/Makevars
+src/Makevars.ucrt

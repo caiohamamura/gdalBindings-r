@@ -26,4 +26,5 @@ Roxygen: list(markdown = TRUE)
 BugReports: https://github.com/caiohamamura/gdalBindings-R/issues
 URL: https://github.com/caiohamamura/gdalBindings-R
 SystemRequirements: 
-    GDAL
+    GDAL,
+    PROJ
