@@ -1,5 +1,5 @@
 # Initialize the package and version
-AC_INIT([gdalBindings], [0.1.20])
+AC_INIT([gdalBindings], [0.1.26])
 
 # Check for the required version of pkg-config
 PKG_PROG_PKG_CONFIG([0.15.0])
