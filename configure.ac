@@ -12,6 +12,10 @@ CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 
+AC_MSG_CHECKING([the operating system name])
+os_name=`"${R_HOME}/bin/Rscript" -e "cat(Sys.info()[['sysname']])"`
+AC_MSG_RESULT([$os_name])
+
 # Check for the presence of a C compiler
 AC_PROG_CXX()
 
@@ -111,6 +115,27 @@ PKG_CHECK_VAR([PROJ_DATADIR], [proj], [datadir])
 AC_MSG_CHECKING([proj datadir path])
 AC_MSG_RESULT([$PROJ_DATADIR])
 
+# Try to use the PROJ datadir
+AC_MSG_CHECKING([whether PROJ can be ran using the datadir])
+
+# export PROJ_LIB=$PROJ_DATADIR
+AC_LANG_PUSH([C++])
+LIBS="${PROJ_LIBS}"
+AC_RUN_IFELSE([
+    AC_LANG_PROGRAM([[
+        #include <proj.h>
+    ]], [[
+        proj_create(NULL, "EPSG:4326");
+        int ret = proj_context_errno(NULL);
+        return ret;
+    ]])
+], [
+    AC_MSG_RESULT([yes])
+], [
+    AC_MSG_ERROR([proj test program failed to run])
+])
+AC_LANG_POP([C++])
+
 AC_SUBST([PROJ_DATADIR])
 
 ##################
@@ -118,5 +143,14 @@ AC_SUBST([PROJ_DATADIR])
 ##################
 
 # Configure the output files
-AC_CONFIG_FILES([src/Makevars])
+output_files="src/Makevars"
+AS_IF([test "x$os_name" = "xWindows"],
+  [
+    output_files="src/Makevars.ucrt"
+    rm -f src/Makevars.ucrt.in
+    cp src/Makevars.in src/Makevars.ucrt.in
+  ]
+)
+
+AC_CONFIG_FILES([$output_files])
 AC_OUTPUT

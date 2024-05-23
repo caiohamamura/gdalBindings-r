@@ -4,13 +4,14 @@ PKG_LIBS = @GDAL_LIBS@ @GDAL_DEP_LIBS@ @PROJ_LIBS@
 # Copy PROJ data directory to inst/proj
 PROJ_DATADIR = @PROJ_DATADIR@
 
-copy_proj_data:
+all: ../inst/proj
+
+../inst/proj:
 	if [ -n "$(PROJ_DATADIR)" ]; then \
-    mkdir -p "$(PROJ_DATADIR)";\
-		cp -r "$(PROJ_DATADIR)" ./inst/proj/;\
+		mkdir -p ../inst/proj;\
+		cp -R "$(PROJ_DATADIR)" ../inst/;\
 	else \
-		echo "PROJ_DATADIR is empty. Skipping file copy."; \
+		echo "PROJ_DATADIR is empty. Skipping file copy.";\
 	fi;
 
-# Override the default build rule to include the custom file copying rule
-all: copy_proj_data
+.PHONY: all
