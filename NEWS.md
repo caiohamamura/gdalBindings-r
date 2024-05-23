@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.27 (2024-05-23)
+
+* Implement PROJ example run to test proj.db during configure step
+* Always copy proj data dir from the same pkg-config datadir it used during installation
+
+
 # gdalBindings 0.1.26 (2024-05-22)
 
 * Update gdalBindings configuration for broader compatibility

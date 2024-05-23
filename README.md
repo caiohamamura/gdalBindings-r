@@ -184,5 +184,5 @@ ds$Close()
 Please report any issue regarding the gdalBindings package to Dr. Hamamura (hamamura.caio@ifsp.edu.br)
 
 # Citing gdalBindings-R
-Hamamura, C. gdalBindings-R: wraps around GDAL C library using Rcpp for reading and writing to Raster, version 0.1.26, accessed on April. 22 2024, available at: <https://github.com/caiohamamura/gdalBindings-R>
+Hamamura, C. gdalBindings-R: wraps around GDAL C library using Rcpp for reading and writing to Raster, version 0.1.27, accessed on April. 22 2024, available at: <https://github.com/caiohamamura/gdalBindings-R>
 
