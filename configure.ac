@@ -105,6 +105,14 @@ AC_SUBST([GDAL_DEP_LIBS])
 ################
 PKG_CHECK_MODULES([PROJ], [proj])
 
+# Copy PROJ datadir
+PKG_CHECK_VAR([PROJ_DATADIR], [proj], [datadir])
+
+AC_MSG_CHECKING([proj datadir path])
+AC_MSG_RESULT([$PROJ_DATADIR])
+
+AC_SUBST([PROJ_DATADIR])
+
 ##################
 ## END
 ##################

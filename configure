@@ -646,6 +646,7 @@ ac_includes_default="\
 ac_header_c_list=
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+PROJ_DATADIR
 PROJ_LIBS
 PROJ_CFLAGS
 GDAL_DEP_LIBS
@@ -725,7 +726,8 @@ GDAL_LIBS
 CC
 CFLAGS
 PROJ_CFLAGS
-PROJ_LIBS'
+PROJ_LIBS
+PROJ_DATADIR'
 
 
 # Initialize some variables set by options.
@@ -1359,6 +1361,8 @@ Some influential environment variables:
   CFLAGS      C compiler flags
   PROJ_CFLAGS C compiler flags for PROJ, overriding pkg-config
   PROJ_LIBS   linker flags for PROJ, overriding pkg-config
+  PROJ_DATADIR
+              value of datadir for proj, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -4428,6 +4432,39 @@ else
 printf "%s\n" "yes" >&6; }
 
 fi
+
+# Copy PROJ datadir
+
+if test -n "$PROJ_DATADIR"; then
+    pkg_cv_PROJ_DATADIR="$PROJ_DATADIR"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"proj\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "proj") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PROJ_DATADIR=`$PKG_CONFIG --variable="datadir" "proj" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+PROJ_DATADIR=$pkg_cv_PROJ_DATADIR
+
+if test "x$PROJ_DATADIR" = x""
+then :
+
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking proj datadir path" >&5
+printf %s "checking proj datadir path... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $PROJ_DATADIR" >&5
+printf "%s\n" "$PROJ_DATADIR" >&6; }
+
+
 
 ##################
 ## END

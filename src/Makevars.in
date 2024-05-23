@@ -1,2 +1,16 @@
 PKG_CPPFLAGS = @GDAL_CFLAGS@ @PROJ_CFLAGS@
 PKG_LIBS = @GDAL_LIBS@ @GDAL_DEP_LIBS@ @PROJ_LIBS@
+
+# Copy PROJ data directory to inst/proj
+PROJ_DATADIR = @PROJ_DATADIR@
+
+copy_proj_data:
+	if [ -n "$(PROJ_DATADIR)" ]; then \
+    mkdir -p "$(PROJ_DATADIR)";\
+		cp -r "$(PROJ_DATADIR)" ./inst/proj/;\
+	else \
+		echo "PROJ_DATADIR is empty. Skipping file copy."; \
+	fi;
+
+# Override the default build rule to include the custom file copying rule
+all: copy_proj_data
