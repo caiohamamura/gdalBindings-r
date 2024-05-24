@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.28 (2024-05-24)
+
+- Same as previous version.
+
+
 # gdalBindings 0.1.27 (2024-05-23)
 
 * Implement PROJ example run to test proj.db during configure step

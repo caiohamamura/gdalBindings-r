@@ -1,5 +1,5 @@
 # Initialize the package and version
-AC_INIT([gdalBindings],[0.1.27])
+AC_INIT([gdalBindings],[0.1.28])
 
 # Initialize autoconfig
 AC_PREREQ([2.71])
@@ -118,13 +118,14 @@ AC_MSG_RESULT([$PROJ_DATADIR])
 # Try to use the PROJ datadir
 AC_MSG_CHECKING([whether PROJ can be ran using the datadir])
 
-# export PROJ_LIB=$PROJ_DATADIR
 AC_LANG_PUSH([C++])
 LIBS="${PROJ_LIBS}"
 AC_RUN_IFELSE([
     AC_LANG_PROGRAM([[
         #include <proj.h>
     ]], [[
+        const char* paths[] = {"$PROJ_DATADIR"};
+        proj_context_set_search_paths(NULL, 1, paths);
         proj_create(NULL, "EPSG:4326");
         int ret = proj_context_errno(NULL);
         return ret;
