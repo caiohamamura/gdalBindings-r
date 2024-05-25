@@ -1,5 +1,5 @@
 # Initialize the package and version
-AC_INIT([gdalBindings],[0.1.28])
+AC_INIT([gdalBindings],[0.1.29])
 
 # Initialize autoconfig
 AC_PREREQ([2.71])

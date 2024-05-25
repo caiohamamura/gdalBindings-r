@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.29 (2024-05-25)
+
+* Enhance: PROJ data directory is defined using proj_context_set_search_paths to avoid touching environment variables
+
+
 # gdalBindings 0.1.28 (2024-05-24)
 
 - Same as previous version.
