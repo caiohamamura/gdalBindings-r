@@ -1,5 +1,7 @@
+#include <vector>
 #include <Rcpp.h>
 #include <gdal_priv.h>
+#include <proj.h>
 
 using namespace Rcpp;
 
@@ -231,10 +233,45 @@ void GDALDatasetFinalizer(GDALDatasetR *ds)
   ds->Close();
 }
 
-void InitializeGDAL()
+std::vector<char *> CharacterVectorToCharVec(CharacterVector vec)
 {
+  std::vector<char *> charVec;
+  for (auto &str : vec)
+  {
+    charVec.push_back(strdup(str));
+  }
+
+  return charVec;
+}
+
+void freeCharVec(std::vector<char *> vec)
+{
+  for (auto &str : vec)
+  {
+    free(str);
+  }
+}
+
+void InitializeGDAL(CharacterVector paths)
+{
+
+  std::vector<char *> paths_char = CharacterVectorToCharVec(paths);
+  proj_context_set_search_paths(NULL, paths_char.size(), paths_char.data());
+  freeCharVec(paths_char);
+
   GDALAllRegister();
   CPLSetErrorHandler(CPLQuietErrorHandler);
+}
+
+IntegerVector GetProjVersion()
+{
+  PJ_INFO info = proj_info();
+  int major, minor, patch;
+  if (sscanf(info.version, "%d.%d.%d", &major, &minor, &patch) != 3)
+  {
+    Rcpp::stop("Failed to parse PROJ version");
+  }
+  return IntegerVector::create(major, minor, patch);
 }
 
 GDALDatasetR *RGDALOpen(const char *filename, bool readonly)
@@ -285,4 +322,5 @@ RCPP_MODULE(gdal_module)
   function("create_dataset", &create_dataset);
   function("RGDALOpen", &RGDALOpen);
   function("InitializeGDAL", &InitializeGDAL);
+  function("GetProjVersion", &GetProjVersion);
 }

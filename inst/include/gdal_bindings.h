@@ -1,5 +1,10 @@
+#ifndef GDAL_WRAPPER_H
+#define GDAL_WRAPPER_H
+
+#include <vector>
 #include <Rcpp.h>
 #include <gdal_priv.h>
+#include <proj.h>
 
 using namespace Rcpp;
 
@@ -10,19 +15,12 @@ private:
 
 public:
   GDALRasterBandR(GDALRasterBand *the_band);
-
   void CalculateStatistics();
-
   IntegerVector GetBlockXSize();
-
   IntegerVector GetBlockYSize();
-
   int GetRasterDataType();
-
   int GetXSize();
-
   int GetYSize();
-
   double GetNoDataValue();
 
   template <typename T, typename S>
@@ -40,18 +38,13 @@ private:
 
 public:
   GDALDatasetR(GDALDataset *_ds);
-
-  virtual ~GDALDatasetR(); NULL;
-  }
-
+  virtual ~GDALDatasetR();
   GDALRasterBandR *GetRasterBand(int nband);
-
   int GetRasterXSize();
-
   int GetRasterYSize();
-
   void Close();
 };
+
 GDALDatasetR *create_dataset(
     const char *output,
     int nbands,
@@ -64,6 +57,15 @@ GDALDatasetR *create_dataset(
     std::vector<double> res,
     double nodata,
     CharacterVector co);
+
 void GDALDatasetFinalizer(GDALDatasetR *ds);
-void InitializeGDAL();
+
+std::vector<char *> CharacterVectorToCharVec(CharacterVector vec);
+
+void freeCharVec(std::vector<char *> vec);
+
+void InitializeGDAL(CharacterVector paths);
+
 GDALDatasetR *RGDALOpen(const char *filename, bool readonly);
+
+RCPP_MODULE(gdal_module);

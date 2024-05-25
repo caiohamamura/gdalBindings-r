@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 #include <ogr_srs_api.h>
 #include <gdal_priv.h>
-#include "gdal.h"
+#include "gdal_bindings.h"
 #include "proj.h"
 using namespace Rcpp;
 

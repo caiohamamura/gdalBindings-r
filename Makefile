@@ -26,3 +26,7 @@ install:
 
 check_rhub:
 	Rscript -e "rhub::rhub_check(platforms = c('windows', 'linux', 'macos'))"
+
+build:
+	./cleanup
+	R CMD build .
