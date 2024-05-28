@@ -1,5 +1,5 @@
 # Initialize the package and version
-AC_INIT([gdalBindings],[0.1.29])
+AC_INIT([gdalBindings],[0.1.30])
 
 # Initialize autoconfig
 AC_PREREQ([2.71])
@@ -60,54 +60,52 @@ AC_DEFUN([GDAL_TEST_PROGRAM_IFELSE], [
 ])
 
 
-AS_IF([test "x$os_name" = "xWindows"],
+# Check for GDAL using pkg-config
+PKG_CHECK_MODULES([GDAL], [gdal])
+
+GDAL_PKG_CONFIG_CFLAGS=$GDAL_CFLAGS
+GDAL_PKG_CONFIG_LIBS=$GDAL_LIBS
+
+# Check for GDAL gdal-config
+# Allow the user to specify the path to gdal-config
+AC_ARG_WITH([gdal-config],
+  [AS_HELP_STRING([--with-gdal-config=PATH], [specify the path to gdal-config])],
+  [gdal_config_path=$withval], [gdal_config_path=""])
+
+# Check if the user has specified a custom path
+AS_IF([test -n "$gdal_config_path"],
   [
-    # Check for GDAL using pkg-config
-    PKG_CHECK_MODULES([GDAL], [gdal])
-  ],
+    # Check if the gdal-config exists at the specified path
+  AC_CHECK_PROG([GDAL_CONFIG], [$gdal_config_path], [$gdal_config_path])
+  AS_IF([test -z "$GDAL_CONFIG"], [
+      AC_MSG_ERROR([gdal-config not found at specified path: $gdal_config_path])])],
   [
-    # Check for GDAL gdal-config
-  # Allow the user to specify the path to gdal-config
-  AC_ARG_WITH([gdal-config],
-    [AS_HELP_STRING([--with-gdal-config=PATH], [specify the path to gdal-config])],
-    [gdal_config_path=$withval], [gdal_config_path=""])
+    # Check for gdal-config in the default PATH
+    AC_PATH_PROG([GDAL_CONFIG], [gdal-config])
+  
+  # If not found, error out with instructions
+  AS_IF([test -z "$GDAL_CONFIG"], [
+    AC_MSG_NOTICE([
+      gdal-config not found.
 
-  # Check if the user has specified a custom path
-  AS_IF([test -n "$gdal_config_path"],
-    [
-      # Check if the gdal-config exists at the specified path
-    AC_CHECK_PROG([GDAL_CONFIG], [$gdal_config_path], [$gdal_config_path])
-    AS_IF([test -z "$GDAL_CONFIG"], [
-        AC_MSG_ERROR([gdal-config not found at specified path: $gdal_config_path])])],
-    [
-      # Check for gdal-config in the default PATH
-      AC_PATH_PROG([GDAL_CONFIG], [gdal-config])
-    
-    # If not found, error out with instructions
-    AS_IF([test -z "$GDAL_CONFIG"], [
-      AC_MSG_NOTICE([
-        gdal-config not found.
+      If you have installed the GDAL libraries, then make sure that
+      gdal-config is in your path. Try typing gdal-config at a
+      shell prompt and see if it runs. If not, use:
+        --configure-args='--with-gdal-config=/usr/local/bin/gdal-config'
+      with appropriate values for your installation.
 
-        If you have installed the GDAL libraries, then make sure that
-        gdal-config is in your path. Try typing gdal-config at a
-        shell prompt and see if it runs. If not, use:
-          --configure-args='--with-gdal-config=/usr/local/bin/gdal-config'
-        with appropriate values for your installation.
-
-        If you have not installed the GDAL libraries,
-      ])
-      GDAL_INSTALLATION_ERROR
-    ]
-    )])
-
-  # Output the found path of gdal-config
-  AC_MSG_NOTICE([Using gdal-config at $GDAL_CONFIG])
-
-  # Get compiler and linker flags from gdal-config
-  GDAL_CFLAGS=`${GDAL_CONFIG} --cflags`
-  GDAL_LIBS=$($GDAL_CONFIG --libs)
+      If you have not installed the GDAL libraries,
+    ])
+    GDAL_INSTALLATION_ERROR
   ]
-)
+  )])
+
+# Output the found path of gdal-config
+AC_MSG_NOTICE([Using gdal-config at $GDAL_CONFIG])
+
+# Get compiler and linker flags from gdal-config
+GDAL_CONFIG_CFLAGS=`${GDAL_CONFIG} --cflags`
+GDAL_CONFIG_LIBS=$($GDAL_CONFIG --libs)
 
 
 # Define CXXFLAGS which are used by default to compile the test program
@@ -125,41 +123,67 @@ AC_CHECK_HEADER([gdal.h],
   ]
 )
 
-# Now try to link GDAL with gdal-config --libs only
-LIBS="${LIBS} ${GDAL_LIBS} -Wl,--verbose"
+# Try to link GDAL with `pkg-config --libs gdal` only
+GDAL_LIBS=$GDAL_PKG_CONFIG_LIBS
+LIBS="${GDAL_LIBS}"
+
+gdal_can_compile=no
 
 GDAL_TEST_PROGRAM_IFELSE(
-  [whether GDAL can be linked using only `--libs`],
+  [whether GDAL can be linked using only `pkg-config --libs gdal`],
   [
     gdal_can_compile=yes
-    GDAL_DEP_LIBS=""
-  ],
-  [
-    gdal_can_compile=no
   ]
 )
 
-AS_IF([test "x$gdal_can_compile" = "xno"],
-  GDAL_DEP_LIBS=$($GDAL_CONFIG --dep-libs)
-  LIBS="${LIBS} ${GDAL_DEP_LIBS}"
+AS_IF([test "x$gdal_can_compile" = "xno"], [
+  # Now try to link GDAL with gdal-config --libs only
+  GDAL_LIBS=$GDAL_CONFIG_LIBS
+  LIBS="${GDAL_LIBS}"
+
+  GDAL_TEST_PROGRAM_IFELSE(
+    [whether GDAL can be linked using only `gdal-config --libs`],
+    [
+      gdal_can_compile=yes
+    ]
+  ) 
+])
+
+
+AS_IF([test "x$gdal_can_compile" = "xno"], [
+  # Now try to link GDAL with gdal-config --libs --dep-libs
+  GDAL_LIBS=$($GDAL_CONFIG --libs --dep-libs)
+  LIBS="${GDAL_LIBS}"
   
   GDAL_TEST_PROGRAM_IFELSE(
-    [whether GDAL can be linked using `--libs` and `gdal-config --dep-libs`],
-    [],
+    [whether GDAL can be linked using `gdal-config --libs --dep-libs`],
+    [
+      gdal_can_compile=yes
+    ]
+  )
+])
+
+AS_IF([test "x$gdal_can_compile" = "xno"], [
+  # Now try to link GDAL with pkg-config --libs gdal and gdal-config --dep-libs
+  GDAL_LIBS=$GDAL_PKG_CONFIG_LIBS
+  GDAL_LIBS="${GDAL_LIBS} $($GDAL_CONFIG --dep-libs)"
+  LIBS="${GDAL_LIBS}"
+  
+  GDAL_TEST_PROGRAM_IFELSE(
+    [whether GDAL can be linked using both `pkg-config --libs gdal` and `gdal-config --dep-libs`],
+    [
+      gdal_can_compile=yes
+    ],
     [
       AC_MSG_NOTICE([
-        Could not link to GDAL
-        neither with `gdal-config --libs` only
-        nor with `--libs` and `--dep-libs`.
+        Could not link to GDAL using `pkg-config` nor `gdal-config`.
       ])
       GDAL_INSTALLATION_ERROR
     ]
   )
-)
+])
 
 AC_SUBST([GDAL_LIBS])
-AC_SUBST([GDAL_DEP_LIBS])
-
 
 ################
 ## PROJ
@@ -188,9 +212,10 @@ AC_RUN_IFELSE([
         return ret;
     ]])
 ], [
-    AC_MSG_RESULT([yes])
+  AC_MSG_RESULT([yes])
 ], [
-    AC_MSG_ERROR([proj test program failed to run])
+  AC_MSG_RESULT([no])
+  AC_MSG_ERROR([PROJ test program failed to run])
 ])
 AC_LANG_POP([C++])
 
