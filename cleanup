@@ -1,5 +1,7 @@
 #!/bin/sh
 rm -f src/Makevars
+rm -f src/Makevars.ucrt
+rm -f src/Makevars.ucrt.in
 rm -f aclocal.m4
 rm -rf inst/proj
 rm -f configure.win~
@@ -13,3 +15,4 @@ for f in ./config.*; do
 done
 
 exit 0
+
