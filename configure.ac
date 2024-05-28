@@ -23,8 +23,8 @@ AC_PROG_CXX()
 #################
 ## GDAL
 #################
-# Define a macro to give an error message if GDAL is not installed
-m4_define([GDAL_INSTALLATION_ERROR], [
+# Define a function to give an error message if GDAL is not installed
+AC_DEFUN([GDAL_INSTALLATION_ERROR], [
   AC_MSG_ERROR([
       Please make sure the GDAL development package is installed:
       
@@ -36,7 +36,7 @@ m4_define([GDAL_INSTALLATION_ERROR], [
   ])
 ])
 
-# Define a macro to test if gdal test program compiles
+# Define a function to test if gdal test program compiles
 # args: message, action if compiles, action if fails
 AC_DEFUN([GDAL_TEST_PROGRAM_IFELSE], [
   AC_MSG_CHECKING([$1])
@@ -106,6 +106,7 @@ AC_MSG_NOTICE([Using gdal-config at $GDAL_CONFIG])
 # Get compiler and linker flags from gdal-config
 GDAL_CONFIG_CFLAGS=`${GDAL_CONFIG} --cflags`
 GDAL_CONFIG_LIBS=$($GDAL_CONFIG --libs)
+GDAL_CONFIG_DEP_LIBS=$($GDAL_CONFIG --dep-libs)
 
 
 # Define CXXFLAGS which are used by default to compile the test program
@@ -152,11 +153,11 @@ AS_IF([test "x$gdal_can_compile" = "xno"], [
 
 AS_IF([test "x$gdal_can_compile" = "xno"], [
   # Now try to link GDAL with gdal-config --libs --dep-libs
-  GDAL_LIBS=$($GDAL_CONFIG --libs --dep-libs)
+  GDAL_LIBS="${GDAL_CONFIG_LIBS} ${GDAL_CONFIG_DEP_LIBS}"
   LIBS="${GDAL_LIBS}"
   
   GDAL_TEST_PROGRAM_IFELSE(
-    [whether GDAL can be linked using `gdal-config --libs --dep-libs`],
+    [whether GDAL can be linked using `gdal-config --libs` and `--dep-libs`],
     [
       gdal_can_compile=yes
     ]

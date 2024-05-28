@@ -3329,10 +3329,10 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 #################
 ## GDAL
 #################
-# Define a macro to give an error message if GDAL is not installed
+# Define a function to give an error message if GDAL is not installed
 
 
-# Define a macro to test if gdal test program compiles
+# Define a function to test if gdal test program compiles
 # args: message, action if compiles, action if fails
 
 
@@ -3595,6 +3595,7 @@ printf "%s\n" "$as_me: Using gdal-config at $GDAL_CONFIG" >&6;}
 # Get compiler and linker flags from gdal-config
 GDAL_CONFIG_CFLAGS=`${GDAL_CONFIG} --cflags`
 GDAL_CONFIG_LIBS=$($GDAL_CONFIG --libs)
+GDAL_CONFIG_DEP_LIBS=$($GDAL_CONFIG --dep-libs)
 
 
 # Define CXXFLAGS which are used by default to compile the test program
@@ -4525,12 +4526,12 @@ if test "x$gdal_can_compile" = "xno"
 then :
 
   # Now try to link GDAL with gdal-config --libs --dep-libs
-  GDAL_LIBS=$($GDAL_CONFIG --libs --dep-libs)
+  GDAL_LIBS="${GDAL_CONFIG_LIBS} ${GDAL_CONFIG_DEP_LIBS}"
   LIBS="${GDAL_LIBS}"
 
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether GDAL can be linked using \`gdal-config --libs --dep-libs\`" >&5
-printf %s "checking whether GDAL can be linked using \`gdal-config --libs --dep-libs\`... " >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether GDAL can be linked using \`gdal-config --libs\` and \`--dep-libs\`" >&5
+printf %s "checking whether GDAL can be linked using \`gdal-config --libs\` and \`--dep-libs\`... " >&6; }
   ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'

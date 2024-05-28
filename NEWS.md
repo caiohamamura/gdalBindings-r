@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.30 (2024-05-28)
+
+* Try multiple combinations of pkg-config and gdal-config for gdal compiling
+* Use pkg-config for windows only, gdal-conf otherwise
+
+
 # gdalBindings 0.1.29 (2024-05-25)
 
 * Enhance: PROJ data directory is defined using proj_context_set_search_paths to avoid touching environment variables
