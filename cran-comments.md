@@ -1,7 +1,7 @@
 ## Fixes provided in this new submission
 
 Uwe Ligges has asked us to use `gdal-config --libs` only during the configuration
-step, and only add `gdal-config --libs --dep-libs` if that failed as it is done
+step, and only add `gdal-config --dep-libs` if that failed as it is done
 in `sf` package. 
 
 The problem is that this will still not account for every type of system either,
