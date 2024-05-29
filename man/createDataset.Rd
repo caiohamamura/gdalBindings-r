@@ -15,7 +15,7 @@ createDataset(
   lr_lon,
   res,
   nodata,
-  co = NULL
+  co = c("TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512", "COMPRESSION=LZW")
 )
 }
 \arguments{
@@ -50,7 +50,7 @@ Create a new raster file based on specified data. It will output a *.tif file.
 }
 \examples{
 # Parameters
-raster_path <- file.path(tempdir(), "output.tif")
+raster_path <- tempfile(fileext = ".tif")
 ul_lat <- -15
 ul_lon <- -45
 lr_lat <- -25
