@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.31 (2024-05-29)
+
+* Allow GDAL to dynamically find the driver name when creating raster based on extension
+
+
 # gdalBindings 0.1.30 (2024-05-28)
 
 * Try multiple combinations of pkg-config and gdal-config for gdal compiling
