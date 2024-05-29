@@ -41,7 +41,7 @@ defaultProjection <- 'GEOGCS["WGS 84",
 #'
 #' @examples
 #' # Parameters
-#' raster_path <- file.path(tempdir(), "output.tif")
+#' raster_path <- tempfile(fileext = ".tif")
 #' ul_lat <- -15
 #' ul_lon <- -45
 #' lr_lat <- -25
@@ -87,7 +87,7 @@ createDataset <- function(
     lr_lon,
     res,
     nodata,
-    co = NULL) {
+    co = c("TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512", "COMPRESSION=LZW")) {
   ds <- create_dataset(
     raster_path,
     nbands,

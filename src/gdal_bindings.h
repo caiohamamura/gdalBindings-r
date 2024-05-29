@@ -2,8 +2,75 @@
 #include <Rcpp.h>
 #include <gdal_priv.h>
 #include <proj.h>
+#include "cpl_string.h"
+#include <string>
 
 using namespace Rcpp;
+
+// Function to get the file extension from a file name
+std::string GetFileExtension(std::string fileName)
+{
+  size_t dotPos = fileName.find_last_of('.');
+  if (dotPos == std::string::npos)
+  {
+    return "";
+  }
+  return fileName.substr(dotPos + 1);
+}
+
+GDALDriver *GetDriverByFile(std::string filename)
+{
+  // Get the file extension from the command line argument
+  std::string fileExtension = GetFileExtension(filename);
+
+  if (fileExtension.empty())
+  {
+    Rcpp::stop("Invalid file name or no extension found: %s", filename);
+  }
+
+  GDALDriver *pDriver = nullptr;
+  GDALDriverManager *driverManager = GetGDALDriverManager();
+  int nDrivers = driverManager->GetDriverCount();
+  for (int i = 0; i < nDrivers; i++)
+  {
+    GDALDriver *tempDriver = driverManager->GetDriver(i);
+    const char *driverExtensions = tempDriver->GetMetadataItem(GDAL_DMD_EXTENSIONS);
+
+    if (driverExtensions != nullptr)
+    {
+      // Split the extensions string and compare with the given file extension
+      char **tokens = CSLTokenizeString(driverExtensions);
+      for (int j = 0; tokens[j] != nullptr; j++)
+      {
+        if (EQUAL(tokens[j], fileExtension.c_str()))
+        {
+          pDriver = tempDriver;
+          break;
+        }
+      }
+      CSLDestroy(tokens);
+    }
+
+    if (pDriver != nullptr)
+    {
+      break;
+    }
+  }
+
+  const char *rasterCapability = pDriver->GetMetadataItem(GDAL_DCAP_RASTER);
+
+  if (!(rasterCapability && EQUAL(rasterCapability, "YES")))
+  {
+    Rcpp::stop("Driver %s does not support raster data", pDriver->GetDescription());
+  }
+
+  if (pDriver == nullptr)
+  {
+    Rcpp::stop("No driver found for extension '%s'", fileExtension);
+  }
+
+  return pDriver;
+}
 
 class GDALRasterBandR
 {
@@ -174,10 +241,10 @@ public:
 };
 
 GDALDatasetR *create_dataset(
-    const char *output,
+    std::string output,
     int nbands,
     int datatype,
-    const char *projection,
+    std::string projection,
     double lat_min,
     double lat_max,
     double lon_min,
@@ -190,9 +257,8 @@ GDALDatasetR *create_dataset(
   int width = (int)ceil((lon_max - lon_min) / res[0]);
   int height = (int)ceil((lat_min - lat_max) / res[1]);
 
-  GDALDriverManager *driverMan = GetGDALDriverManager();
-  GDALDriver *tiffDriver = driverMan->GetDriverByName("GTiff");
-  if (tiffDriver == NULL)
+  GDALDriver *driver = GetDriverByFile(output);
+  if (driver == nullptr)
     Rcpp::stop(CPLGetLastErrorMsg());
 
   std::vector<char *> charVec{};
@@ -203,8 +269,7 @@ GDALDatasetR *create_dataset(
   }
   charVec.push_back(nullptr);
 
-  // Rcout << width << " " << height << "\n";
-  GDALDataset *ds = tiffDriver->Create(output, width, height, nbands, (GDALDataType)datatype, charVec.data());
+  GDALDataset *ds = driver->Create(output.c_str(), width, height, nbands, (GDALDataType)datatype, charVec.data());
 
   if (ds == NULL)
     Rcpp::stop(CPLGetLastErrorMsg());
@@ -218,7 +283,7 @@ GDALDatasetR *create_dataset(
     if (err == CE_Failure)
       Rcpp::stop(CPLGetLastErrorMsg());
   }
-  err = ds->SetProjection(projection);
+  err = ds->SetProjection(projection.c_str());
 
   if (err == CE_Failure)
     Rcpp::stop(CPLGetLastErrorMsg());
@@ -233,31 +298,18 @@ void GDALDatasetFinalizer(GDALDatasetR *ds)
   ds->Close();
 }
 
-std::vector<char *> CharacterVectorToCharVec(CharacterVector vec)
+
+void InitializeGDAL(std::vector<std::string> paths)
 {
-  std::vector<char *> charVec;
-  for (auto &str : vec)
+  std::vector<const char*> cstrings;
+  cstrings.reserve(paths.size());
+
+  for (auto &str : paths)
   {
-    charVec.push_back(strdup(str));
+    cstrings.push_back(str.c_str());
   }
 
-  return charVec;
-}
-
-void freeCharVec(std::vector<char *> vec)
-{
-  for (auto &str : vec)
-  {
-    free(str);
-  }
-}
-
-void InitializeGDAL(CharacterVector paths)
-{
-
-  std::vector<char *> paths_char = CharacterVectorToCharVec(paths);
-  proj_context_set_search_paths(NULL, paths_char.size(), paths_char.data());
-  freeCharVec(paths_char);
+  proj_context_set_search_paths(NULL, cstrings.size(), cstrings.data());
 
   GDALAllRegister();
   CPLSetErrorHandler(CPLQuietErrorHandler);

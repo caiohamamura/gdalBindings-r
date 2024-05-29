@@ -60,11 +60,9 @@ GDALDatasetR *create_dataset(
 
 void GDALDatasetFinalizer(GDALDatasetR *ds);
 
-std::vector<char *> CharacterVectorToCharVec(CharacterVector vec);
+void InitializeGDAL(std::vector<std::string> paths);
 
-void freeCharVec(std::vector<char *> vec);
-
-void InitializeGDAL(CharacterVector paths);
+IntegerVector GetProjVersion();
 
 GDALDatasetR *RGDALOpen(const char *filename, bool readonly);
 
