@@ -11,6 +11,8 @@ Description: Wraps around 'Geospatial' Data Abstraction Library (GDAL) raster
     semantic `[[]]` and familiar syntax for accessing RasterBand and
     reading/writing to blocks (see <https://gdal.org/>).
 License: GPL-3
+Depends:
+  R (>= 4.2)
 Imports:
     data.table,
     methods,

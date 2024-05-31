@@ -1,5 +1,5 @@
 # Initialize the package and version
-AC_INIT([gdalBindings],[0.1.31])
+AC_INIT([gdalBindings],[0.1.32])
 
 # Initialize autoconfig
 AC_PREREQ([2.71])
@@ -62,6 +62,7 @@ AC_DEFUN([GDAL_TEST_PROGRAM_IFELSE], [
 
 # Check for GDAL using pkg-config
 PKG_CHECK_MODULES([GDAL], [gdal])
+PKG_CHECK_MODULES_STATIC([GDAL_STATIC], [gdal])
 
 GDAL_PKG_CONFIG_CFLAGS=$GDAL_CFLAGS
 GDAL_PKG_CONFIG_LIBS=$GDAL_LIBS
@@ -124,35 +125,23 @@ AC_CHECK_HEADER([gdal.h],
   ]
 )
 
-# Try to link GDAL with `pkg-config --libs gdal` only
-GDAL_LIBS=$GDAL_PKG_CONFIG_LIBS
+GDAL_LIBS=$GDAL_CONFIG_LIBS
 LIBS="${GDAL_LIBS}"
-
 gdal_can_compile=no
 
+# Try to link GDAL with gdal-config --libs only
+GDAL_LIBS=$GDAL_CONFIG_LIBS
+LIBS="${GDAL_LIBS}"
+
 GDAL_TEST_PROGRAM_IFELSE(
-  [whether GDAL can be linked using only `pkg-config --libs gdal`],
+  [whether GDAL can be linked using only `gdal-config --libs`],
   [
     gdal_can_compile=yes
   ]
 )
 
+# Try to link GDAL with gdal-config --libs and --dep-libs
 AS_IF([test "x$gdal_can_compile" = "xno"], [
-  # Now try to link GDAL with gdal-config --libs only
-  GDAL_LIBS=$GDAL_CONFIG_LIBS
-  LIBS="${GDAL_LIBS}"
-
-  GDAL_TEST_PROGRAM_IFELSE(
-    [whether GDAL can be linked using only `gdal-config --libs`],
-    [
-      gdal_can_compile=yes
-    ]
-  ) 
-])
-
-
-AS_IF([test "x$gdal_can_compile" = "xno"], [
-  # Now try to link GDAL with gdal-config --libs --dep-libs
   GDAL_LIBS="${GDAL_CONFIG_LIBS} ${GDAL_CONFIG_DEP_LIBS}"
   LIBS="${GDAL_LIBS}"
   
@@ -164,25 +153,40 @@ AS_IF([test "x$gdal_can_compile" = "xno"], [
   )
 ])
 
+# Try to link GDAL with `pkg-config --libs gdal` only
 AS_IF([test "x$gdal_can_compile" = "xno"], [
-  # Now try to link GDAL with pkg-config --libs gdal and gdal-config --dep-libs
   GDAL_LIBS=$GDAL_PKG_CONFIG_LIBS
-  GDAL_LIBS="${GDAL_LIBS} $($GDAL_CONFIG --dep-libs)"
+  LIBS="${GDAL_LIBS}"
+
+
+  GDAL_TEST_PROGRAM_IFELSE(
+    [whether GDAL can be linked using only `pkg-config --libs gdal`],
+    [
+      gdal_can_compile=yes
+    ]
+  )
+]
+
+AS_IF([test "x$gdal_can_compile" = "xno"], [
+  # Now try to link GDAL with pkg-config --libs --static gdal
+  GDAL_LIBS="${$GDAL_STATIC_LIBS}"
   LIBS="${GDAL_LIBS}"
   
   GDAL_TEST_PROGRAM_IFELSE(
-    [whether GDAL can be linked using both `pkg-config --libs gdal` and `gdal-config --dep-libs`],
+    [whether GDAL can be linked using `pkg-config --libs --static gdal`],
     [
       gdal_can_compile=yes
-    ],
-    [
+    ]
+  )
+])
+
+AS_IF([test "x$gdal_can_compile" = "xno"], [
       AC_MSG_NOTICE([
         Could not link to GDAL using `pkg-config` nor `gdal-config`.
       ])
       GDAL_INSTALLATION_ERROR
     ]
-  )
-])
+)
 
 AC_SUBST([GDAL_LIBS])
 
