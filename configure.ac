@@ -165,7 +165,7 @@ AS_IF([test "x$gdal_can_compile" = "xno"], [
       gdal_can_compile=yes
     ]
   )
-]
+])
 
 AS_IF([test "x$gdal_can_compile" = "xno"], [
   # Now try to link GDAL with pkg-config --libs --static gdal
