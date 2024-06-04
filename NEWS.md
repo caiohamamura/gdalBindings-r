@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# gdalBindings 0.1.33 (2024-06-04)
+
+* Removed attempt to link using pkg-config and gdal-config together
+
+
 # gdalBindings 0.1.32 (2024-05-31)
 
 * Removed attempt to link using pkg-config and gdal-config together
